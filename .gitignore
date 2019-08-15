@@ -1,0 +1,25 @@
+# Build output
+/bin/
+/build/
+
+# Gradle files
+.gradle
+
+# Visual studio code
+.settings
+.vscode
+
+# Native Libraries
+*.a
+*.o
+*.so
+*.dll
+*.lib
+*.dylib
+
+# Archives
+*.zip
+*.tar.gz
+
+# VM Crash Logs
+hs_err_pid*.log
