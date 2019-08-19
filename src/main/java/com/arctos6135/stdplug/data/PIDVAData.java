@@ -29,5 +29,27 @@ public final class PIDVAData extends ComplexData<PIDVAData> {
             "kV", this.kV,
             "kA", this.kA
         );
-	}
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if(other instanceof PIDVAData) {
+            PIDVAData d = (PIDVAData) other;
+            if(d.kP == kP && d.kI == kI && d.kD == kD && d.kV == kV && d.kA == kA) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int i = 23;
+        i = i * 31 + Double.valueOf(kP).hashCode();
+        i = i * 31 + Double.valueOf(kI).hashCode();
+        i = i * 31 + Double.valueOf(kD).hashCode();
+        i = i * 31 + Double.valueOf(kV).hashCode();
+        i = i * 31 + Double.valueOf(kA).hashCode();
+        return i;
+    }
 }
