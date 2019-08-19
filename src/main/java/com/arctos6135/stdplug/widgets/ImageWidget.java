@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import com.arctos6135.stdplug.api.StdPlugWidgets;
+
 import edu.wpi.first.shuffleboard.api.prefs.Group;
 import edu.wpi.first.shuffleboard.api.prefs.Setting;
 import edu.wpi.first.shuffleboard.api.widget.Description;
@@ -15,7 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
-@Description(name = "Image", dataTypes = { String.class }, summary = "Displays an image.")
+@Description(name = StdPlugWidgets.IMAGE, dataTypes = { String.class }, summary = "Displays an image.")
 public class ImageWidget extends SimpleAnnotatedWidget<String> {
 
     protected Pane imgPane;
