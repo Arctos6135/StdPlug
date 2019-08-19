@@ -6,25 +6,21 @@ import java.util.List;
 
 import edu.wpi.first.shuffleboard.api.prefs.Group;
 import edu.wpi.first.shuffleboard.api.prefs.Setting;
-import edu.wpi.first.shuffleboard.api.widget.AbstractWidget;
-import edu.wpi.first.shuffleboard.api.widget.AnnotatedWidget;
 import edu.wpi.first.shuffleboard.api.widget.Description;
+import edu.wpi.first.shuffleboard.api.widget.SimpleAnnotatedWidget;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
-@Description(name = "Image", dataTypes = {}, summary = "Displays an image.")
-public class ImageWidget extends AbstractWidget implements AnnotatedWidget {
+@Description(name = "Image", dataTypes = { String.class }, summary = "Displays an image.")
+public class ImageWidget extends SimpleAnnotatedWidget<String> {
 
     protected Pane imgPane;
     protected ImageView view;
 
-    protected StringProperty filePath = new SimpleStringProperty();
     protected BooleanProperty keepAspectRatio = new SimpleBooleanProperty(false);
 
     protected double width = 0, height = 0;
@@ -84,7 +80,7 @@ public class ImageWidget extends AbstractWidget implements AnnotatedWidget {
         });
         
         // When the file path is changed, load the new image
-        filePath.addListener((observable, oldValue, newValue) -> {
+        dataOrDefault.addListener((observable, oldValue, newValue) -> {
             try {
                 Image img = new Image(new FileInputStream(newValue));
                 aspectRatio = img.getWidth() / img.getHeight();
@@ -109,7 +105,7 @@ public class ImageWidget extends AbstractWidget implements AnnotatedWidget {
     public List<Group> getSettings() {
         return List.of(
             Group.of("Image Options", 
-                Setting.of("Image File Path", filePath, String.class),
+                Setting.of("Image File Path", dataProperty(), String.class),
                 Setting.of("Keep Aspect Ratio", keepAspectRatio, Boolean.class)
             )
         );
