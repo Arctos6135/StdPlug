@@ -39,8 +39,6 @@ jar {
     from sourceSets.main.allSource
     
     archiveName 'StdPlug-' + project.version + '.jar'
-
-    exclude 'com/arctos6135/stdplug/api/**'
 }
 
 task apiJar(type: Jar, group: 'Build', description: 'Generates a jar of the StdPlug robot-side API.') {
