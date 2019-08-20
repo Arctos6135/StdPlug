@@ -3,6 +3,19 @@ package com.arctos6135.stdplug.api;
 /**
  * This class contains the names of all the widgets offered by StdPlug.
  * <p>
+ * These names can be passed into
+ * {@link edu.wpi.first.wpilibj.shuffleboard.ComplexWidget#withWidget(String)
+ * ComplexWidget.withWidget(String)} or
+ * {@link edu.wpi.first.wpilibj.shuffleboard.SimpleWidget#withWidget(String)
+ * SimpleWidget.withWidget(String)} to display data using one of these widgets.
+ * For example:
+ * 
+ * <pre>
+ * Shuffleboard.getTab("My Tab").add("My Data", new PIDVAGains()).withWidget(StdPlugWidgets.PIDVA_GAINS)
+ *         .withProperties(Map.of("Show kDP", false));
+ * </pre>
+ * </p>
+ * <p>
  * For more information about a widget, see its documentation.
  * </p>
  * 
@@ -56,18 +69,38 @@ public final class StdPlugWidgets {
     public static final String IMAGE = "Image";
 
     /**
-     * Displays a set of PIDVA gains.
+     * Displays a set of PIDVA or PIDVADP gains.
      * <p>
      * Supported types:
      * <ul>
      * <li>{@link com.arctos6135.stdplug.api.datatypes.PIDVAGains PIDVAGains}</li>
+     * <li>{@link com.arctos6135.stdplug.api.datatypes.PIDVADPGains
+     * PIDVADPGains}</li>
      * </ul>
-     * This widget has no custom properties.
+     * Custom properties:
+     * <table>
+     * <tr>
+     * <th>Name</th>
+     * <th>Type</th>
+     * <th>Default Value</th>
+     * <th>Notes</th>
+     * </tr>
+     * <tr>
+     * <td>Show kDP</td>
+     * <td>Boolean</td>
+     * <td>false</td>
+     * <td>Whether to show the kDP field.<br/>
+     * By default, this property is configured automatically depending on the type
+     * of the data. If set, this property will override the default behavior.</td>
+     * </tr>
+     * </table>
      * </p>
      * 
      * @since 0.1.0
      * @see com.arctos6135.stdplug.api.datatypes.PIDVAGains PIDVAGains
+     * @see com.arctos6135.stdplug.api.datatypes.PIDVADPGains PIDVADPGains
      * @see StdPlugDataTypes#PIDVA_GAINS
+     * @see StdPlugDataTypes#PIDVADP_GAINS
      */
     public static final String PIDVA_GAINS = "PIDVA Gains";
 }

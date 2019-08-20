@@ -48,7 +48,8 @@ public final class StdPlugDataTypes {
      * Represents a set of PIDVA gains.
      * <p>
      * The {@link com.arctos6135.stdplug.api.datatypes.PIDVAGains PIDVAGains} class
-     * can be used to send a set of PIDVA gains.
+     * can be used to send a set of PIDVA gains, which can then be displayed with a
+     * {@link StdPlugWidgets#PIDVA_GAINS} widget.
      * </p>
      * <p>
      * Properties:
@@ -91,8 +92,69 @@ public final class StdPlugDataTypes {
      * </tr>
      * </table>
      * </p>
+     * 
+     * @see com.arctos6135.stdplug.api.datatypes.PIDVAGains PIDVAGains
+     * @see StdPlugWidgets#PIDVA_GAINS
      */
     public static final String PIDVA_GAINS = "PIDVA Gains";
 
+    /**
+     * Represents a set of PIDVA + DP gains.
+     * <p>
+     * The {@link com.arctos6135.stdplug.api.datatypes.PIDVADPGains PIDVADPGains}
+     * class can be used to send a set of PIDVADP gains, which can then be displayed
+     * with a {@link StdPlugWidgets#PIDVA_GAINS} widget.
+     * </p>
+     * <p>
+     * Properties:
+     * <table>
+     * <tr>
+     * <th>Name</th>
+     * <th>Type</th>
+     * <th>Default Value</th>
+     * <th>Notes</th>
+     * </tr>
+     * <tr>
+     * <td>kP</td>
+     * <td>Double</td>
+     * <td>0.0</td>
+     * <td>The proportional gain</td>
+     * </tr>
+     * <tr>
+     * <td>kI</td>
+     * <td>Double</td>
+     * <td>0.0</td>
+     * <td>The integral gain</td>
+     * </tr>
+     * <tr>
+     * <td>kD</td>
+     * <td>Double</td>
+     * <td>0.0</td>
+     * <td>The derivative gain</td>
+     * </tr>
+     * <tr>
+     * <td>kV</td>
+     * <td>Double</td>
+     * <td>0.0</td>
+     * <td>The velocity feedforward gain</td>
+     * </tr>
+     * <tr>
+     * <td>kA</td>
+     * <td>Double</td>
+     * <td>0.0</td>
+     * <td>The acceleration feedforward gain</td>
+     * </tr>
+     * <tr>
+     * <td>kDP</td>
+     * <td>Double</td>
+     * <td>0.0</td>
+     * <td>The directional-proportional gain</td>
+     * </tr>
+     * </table>
+     * </p>
+     * 
+     * @see com.arctos6135.stdplug.api.datatypes.PIDVADPGains PIDVADPGains
+     * @see StdPlugWidgets#PIDVA_GAINS
+     */
     public static final String PIDVADP_GAINS = "PIDVADP Gains";
 }
