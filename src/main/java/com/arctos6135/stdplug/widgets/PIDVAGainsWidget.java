@@ -8,8 +8,11 @@ import edu.wpi.first.shuffleboard.api.components.NumberField;
 import edu.wpi.first.shuffleboard.api.widget.Description;
 import edu.wpi.first.shuffleboard.api.widget.ParametrizedController;
 import edu.wpi.first.shuffleboard.api.widget.SimpleAnnotatedWidget;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 @Description(name = StdPlugWidgets.PIDVA_GAINS, dataTypes = { PIDVAData.class,
@@ -39,6 +42,11 @@ public class PIDVAGainsWidget extends SimpleAnnotatedWidget<Object> {
     private NumberField dpField;
 
     @FXML
+    private Label dpLabel;
+
+    private BooleanProperty showDP = new SimpleBooleanProperty(false);
+
+    @FXML
     private void initialize() {
         // Add listener to the data property so that the displayed values are updated
         // when the data is updated
@@ -49,6 +57,8 @@ public class PIDVAGainsWidget extends SimpleAnnotatedWidget<Object> {
                 dField.setNumber(((PIDVAData) newValue).kD);
                 vField.setNumber(((PIDVAData) newValue).kV);
                 aField.setNumber(((PIDVAData) newValue).kA);
+
+                showDP.set(false);
             } else {
                 pField.setNumber(((PIDVADPData) newValue).kP);
                 iField.setNumber(((PIDVADPData) newValue).kI);
@@ -56,8 +66,23 @@ public class PIDVAGainsWidget extends SimpleAnnotatedWidget<Object> {
                 vField.setNumber(((PIDVADPData) newValue).kV);
                 aField.setNumber(((PIDVADPData) newValue).kA);
                 dpField.setNumber(((PIDVADPData) newValue).kDP);
+
+                showDP.set(true);
             }
         });
+
+        // Bind the visible and managed properties of the DP text field and label
+        // so that when we set it to invisible it's also not managed
+        dpField.managedProperty().bind(dpField.visibleProperty());
+        dpLabel.managedProperty().bind(dpLabel.visibleProperty());
+
+        // Add listener to the showDP property to hide the DP field when it is set to true
+        showDP.addListener((observable, oldValue, newValue) -> {
+            dpField.setVisible(newValue);
+            dpLabel.setVisible(newValue);
+        });
+        dpField.setVisible(showDP.get());
+        dpLabel.setVisible(showDP.get());
 
         // Add listener to the focused property of each field to trigger an action event
         // when they lose focus

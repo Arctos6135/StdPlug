@@ -33,7 +33,7 @@
     <Label text="A" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
     <NumberField fx:id="aField" onAction="#setA" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.hgrow="ALWAYS"/>
 
-    <Label text="DP" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+    <Label text="DP" fx:id="dpLabel" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
     <NumberField fx:id="dpField" onAction="#setDP" GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.hgrow="ALWAYS"/>
 
 </GridPane>
