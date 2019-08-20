@@ -93,4 +93,6 @@ public final class StdPlugDataTypes {
      * </p>
      */
     public static final String PIDVA_GAINS = "PIDVA Gains";
+
+    public static final String PIDVADP_GAINS = "PIDVADP Gains";
 }

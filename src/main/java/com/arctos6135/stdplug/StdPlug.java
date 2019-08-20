@@ -3,6 +3,7 @@ package com.arctos6135.stdplug;
 import java.util.List;
 import java.util.Map;
 
+import com.arctos6135.stdplug.datatypes.PIDVADPDataType;
 import com.arctos6135.stdplug.datatypes.PIDVADataType;
 import com.arctos6135.stdplug.widgets.ImageWidget;
 import com.arctos6135.stdplug.widgets.PIDVAGainsWidget;
@@ -20,7 +21,8 @@ public class StdPlug extends Plugin {
     @SuppressWarnings("rawtypes")
     public List<DataType> getDataTypes() {
         return List.of(
-            PIDVADataType.Instance
+            PIDVADataType.Instance,
+            PIDVADPDataType.Instance
         );
     }
 
