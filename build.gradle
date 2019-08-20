@@ -41,6 +41,43 @@ tasks.withType(Checkstyle) {
     }
 }
 
+// Needed to fix Javadoc search
+// See comments below
+final JAVADOC_FIX_SEARCH_STR = '\n\n' +
+'/****************************************************************\n' + 
+' * THE BELOW SNIPPET WAS APPENDED BY THE STDPLUG BUILD PROCESS  *\n' +
+' * This fixes the broken search functionality due to not having *\n' +
+' * modules without breaking external links                      *\n' +
+' ****************************************************************/\n' +
+'getURLPrefix = function(ui) {\n' +
+'    return \'\';\n' +
+'}\n'
+
+tasks.withType(Javadoc) {
+    // Link to external docs for all the builtin classes
+    options.with {
+        links 'https://docs.oracle.com/en/java/javase/11/docs/api/', 
+              'https://first.wpi.edu/FRC/roborio/release/docs/java/'
+    }
+    // Only generate docs for public methods, fields and types
+    options.addBooleanOption('public', true)
+
+    // Only include the public API classes
+    exclude 'com/arctos6135/stdplug/*.java'
+    exclude 'com/arctos6135/stdplug/data/*'
+    exclude 'com/arctos6135/stdplug/datatypes/*'
+    exclude 'com/arctos6135/stdplug/widgets/*'
+
+    doLast {
+        // Since the introduction of modules in Java 9, the Javadoc search functionality would break if the
+        // project was not using modules. Although --no-module-directories fixes this, it breaks external
+        // links in the process. Therefore, we append a short snippet of code to the end of the JavaScript
+        // to fix it.
+        def searchScript = new File(destinationDir.getAbsolutePath() + '/search.js')
+        searchScript.append JAVADOC_FIX_SEARCH_STR
+    }
+}
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
