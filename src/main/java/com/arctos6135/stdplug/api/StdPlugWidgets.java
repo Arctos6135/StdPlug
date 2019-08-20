@@ -6,4 +6,6 @@ public final class StdPlugWidgets {
     }
 
     public static final String IMAGE = "Image";
+
+    public static final String PIDVA_GAINS = "PIDVA Gains";
 }

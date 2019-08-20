@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<?import edu.wpi.first.shuffleboard.api.components.NumberField?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.arctos6135.stdplug.widgets.PIDVAGainsWidget" fx:id="root"
+          hgap="4" vgap="4">
+    <padding>
+        <Insets top="8" bottom="8" left="16" right="16"/>
+    </padding>
+    <columnConstraints>
+        <ColumnConstraints minWidth="25" prefWidth="25" maxWidth="25"/>
+        <ColumnConstraints maxWidth="Infinity"/>
+    </columnConstraints>
+
+    <Label text="P" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+    <NumberField fx:id="pField" onAction="#setP" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
+
+    <Label text="I" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <NumberField fx:id="iField" onAction="#setI" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
+
+    <Label text="D" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <NumberField fx:id="dField" onAction="#setD" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS"/>
+
+    <Label text="V" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <NumberField fx:id="vField" onAction="#setV" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.hgrow="ALWAYS"/>
+
+    <Label text="A" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+    <NumberField fx:id="aField" onAction="#setA" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.hgrow="ALWAYS"/>
+
+</GridPane>

@@ -3,6 +3,7 @@ package com.arctos6135.stdplug;
 import java.util.List;
 
 import com.arctos6135.stdplug.widgets.ImageWidget;
+import com.arctos6135.stdplug.widgets.PIDVAGainsWidget;
 
 import edu.wpi.first.shuffleboard.api.plugin.Description;
 import edu.wpi.first.shuffleboard.api.plugin.Plugin;
@@ -16,7 +17,8 @@ public class StdPlug extends Plugin {
     @SuppressWarnings("rawtypes")
     public List<ComponentType> getComponents() {
         return List.of(
-            WidgetType.forAnnotatedWidget(ImageWidget.class)
+            WidgetType.forAnnotatedWidget(ImageWidget.class),
+            WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class)
         );
     }
 }

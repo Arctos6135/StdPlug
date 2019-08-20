@@ -6,11 +6,11 @@ import edu.wpi.first.shuffleboard.api.data.ComplexData;
 
 public final class PIDVAData extends ComplexData<PIDVAData> {
 
-    private final double kP;
-    private final double kI;
-    private final double kD;
-    private final double kV;
-    private final double kA;
+    public final double kP;
+    public final double kI;
+    public final double kD;
+    public final double kV;
+    public final double kA;
 
     public PIDVAData(double kP, double kI, double kD, double kV, double kA) {
         this.kP = kP;
