@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+    "https://checkstyle.org/dtds/suppressions_1_0.dtd">
+
+<suppressions>
+    <!-- These classes and packages are not a part of the public API -->
+    <!-- Therefore no Javadoc checks are performed on them -->
+    <suppress files="StdPlug\.java" checks="(Javadoc|NonEmptyAtclauseDescription|MissingDeprecated)" />
+    <suppress files="src[\\\/]main[\\\/]java[\\\/]com[\\\/]arctos6135[\\\/]stdplug[\\\/]data" checks="" />
+    <suppress files="src[\\\/]main[\\\/]java[\\\/]com[\\\/]arctos6135[\\\/]stdplug[\\\/]datatypes" checks="" />
+    <suppress files="src[\\\/]main[\\\/]java[\\\/]com[\\\/]arctos6135[\\\/]stdplug[\\\/]widgets" checks="" />
+</suppressions>

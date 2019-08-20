@@ -7,6 +7,9 @@ plugins {
 
     // Use GradleRIO for the FRC libraries
     id 'edu.wpi.first.GradleRIO' version '2019.3.2'
+
+    // Checkstyle
+    id 'checkstyle'
 }
 
 project.version = "0.1.0"
@@ -15,6 +18,27 @@ project.version = "0.1.0"
 javafx {
     version = "12.0.1"
     modules = [ 'javafx.graphics', 'javafx.fxml', 'javafx.controls' ]
+}
+
+// Checkstyle config
+checkstyle {
+    project.ext.checkstyleVersion = '8.20'
+
+    ignoreFailures = false
+    configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+// Include all Java source files in checkstyleMain
+checkstyleMain {
+    source = sourceSets.main.allSource
+}
+
+// Disable XML reports and enable HTML reports for checkstyle
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
 }
 
 repositories {
