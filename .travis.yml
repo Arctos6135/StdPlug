@@ -2,6 +2,11 @@ language: java
 
 dist: xenial
 
+# Encrypted Ryver webhook URL
+env:
+  global:
+    secure: "1a9MLjd8TL8vhGMl7nKI5lqDNhveFvLBxTdq6UgXlNyaGyk49ki4MRd+tuZCwFuhQ9CMD36cTuSDcaP3uJ5uHu1JYcDAjMVj+8oyJ1KjilE1V7AIQlfBEBXX56Jo86xtPAyJlkbDQnnAUBf0n3ejBpHPm72p8qs9Ptq56m4IDwRRlkz8lXDG6BOCzONH/KG4gMz7mUf7yyViISZ+lKl3BT0zre3ShYrETOBEpwIh5y3FcJuZOn/fCsZhuWQ6XoMmjfjLwzGGNykmxy3lcnfgZm2ZWr5yx+ol0M8hJga9UT5U/y34eubf/dSH63eBkv7ZStTETOZR48wyvmNRwKUfI8dxWVjDDK4fd3NjqBt8ojA24SiXOBPRDrzyENLUi8WqGpyn4gIfwJPgDrok2WNgSaIqXnjtt8wWf+LQu/fFXc/asIJmzXZTEcY71raofk7Viu9gLSCDUiCoa/o1/5advl4H59bEupPDKGkYsERc3MUNeQxG+z1TKWNrmjLGvefXEeYzcjwl4yaDMlf22vG8J1SzVxoIaTqfJVlG55lwpgYrCSisx09w2PZYhApt8VmUIxPXn5S9B7TzqM5aaZ0hhyTXBbZ7wtPRqk+o05s+XfoWmT6yTX897sCqwX2mA/UAMUt1rfWJv92eAj7LYAh3YGvw5pg7DXX2CwaQRU/6bMc="
+
 install: 
   # chmod the wrapper to be executable
   - chmod +x ./gradlew
@@ -19,3 +24,19 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+
+after_success:
+  - export SHORT_COMMIT=${TRAVIS_COMMIT:0:7}
+  - >
+    curl --request 'POST' 
+    --header 'Content-Type: text/plain; charset=utf-8' 
+    --data "&#9989; **SUCCESS** &#9989; The latest commit pushed to **StdPlug** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has [**passed** CI checks]($TRAVIS_JOB_WEB_URL)!"
+    $WEBHOOK_URL
+
+after_failure:
+  - export SHORT_COMMIT=${TRAVIS_COMMIT:0:7}
+  - >
+    curl --request 'POST' 
+    --header 'Content-Type: text/plain; charset=utf-8' 
+    --data "&#10060; **ERROR** &#10060; The latest commit pushed to **StdPlug** (commit *$SHORT_COMMIT* on branch *$TRAVIS_BRANCH*) has [**failed** CI checks]($TRAVIS_JOB_WEB_URL)!" 
+    $WEBHOOK_URL
