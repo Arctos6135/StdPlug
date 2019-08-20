@@ -39,7 +39,8 @@ public class StdPlug extends Plugin {
     @SuppressWarnings("rawtypes")
     public Map<DataType, ComponentType> getDefaultComponents() {
         return Map.of(
-            PIDVADataType.Instance, WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class)
+            PIDVADataType.Instance, WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class),
+            PIDVADPDataType.Instance, WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class)
         );
     }
 }
