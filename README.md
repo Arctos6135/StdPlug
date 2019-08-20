@@ -7,11 +7,14 @@
 ## Overview
 
 StdPlug is the Arctos 6135 "Standard" Shuffleboard Plugin. Currently, it offers these widgets:
+
 | Name        | Description                                       | Accepted Data Types        |
 | ----------- | ------------------------------------------------- | -------------------------- |
 | Image       | Displays a static image when given its full path. | String                     |
 | PIDVA Gains | Displays a set of PIDVA or PIDVA + DP gains.      | PIDVA Gains, PIDVADP Gains |
+
 And these data types:
+
 | Name          | Description                | Compatible Widgets | Default Widget |
 | ------------- | -------------------------- | ------------------ | -------------- |
 | PIDVA Gains   | A set of PIDVA gains.      | PIDVA Gains        | PIDVA Gains    |
