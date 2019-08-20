@@ -4,6 +4,9 @@ plugins {
 
     // Apply the javafxplugin for JavaFX classes 
     id 'org.openjfx.javafxplugin' version '0.0.7'
+
+    // Use GradleRIO for the FRC libraries
+    id 'edu.wpi.first.GradleRIO' version '2019.3.2'
 }
 
 project.version = "0.1.0"
@@ -30,6 +33,9 @@ dependencies {
     // Shuffleboard plugins framework
     implementation(group: "edu.wpi.first.shuffleboard", name: "api", version: "2019.4.1")
 
+    // WPILib for the API
+    api wpi.deps.wpilib()
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
@@ -39,6 +45,8 @@ jar {
     from sourceSets.main.allSource
     
     archiveName 'StdPlug-' + project.version + '.jar'
+
+    exclude 'com/arctos6135/stdplug/api/datatypes/**'
 }
 
 task apiJar(type: Jar, group: 'Build', description: 'Generates a jar of the StdPlug robot-side API.') {

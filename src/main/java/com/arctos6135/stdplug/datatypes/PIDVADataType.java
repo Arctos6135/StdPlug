@@ -3,18 +3,17 @@ package com.arctos6135.stdplug.datatypes;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.arctos6135.stdplug.api.StdPlugDataTypes;
 import com.arctos6135.stdplug.data.PIDVAData;
 
 import edu.wpi.first.shuffleboard.api.data.ComplexDataType;
 
 public final class PIDVADataType extends ComplexDataType<PIDVAData> {
-    
-    private static final String NAME = "PIDVA Gains";
 
     public static final PIDVADataType Instance = new PIDVADataType();
 
     public PIDVADataType() {
-        super(NAME, PIDVAData.class);
+        super(StdPlugDataTypes.PIDVA_GAINS, PIDVAData.class);
     }
 
     @Override
