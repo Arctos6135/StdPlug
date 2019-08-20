@@ -79,31 +79,31 @@ public class PIDVAGainsWidget extends SimpleAnnotatedWidget<PIDVAData> {
 
     @FXML
     private void setP() {
-        PIDVAData data = new PIDVAData(pField.getNumber(), getData().kI, getData().kD, getData().kV, getData().kA);
+        PIDVAData data = new PIDVAData(pField.getNumber(), dataOrDefault.get().kI, dataOrDefault.get().kD, dataOrDefault.get().kV, dataOrDefault.get().kA);
         setData(data);
     }
 
     @FXML
     private void setI() {
-        PIDVAData data = new PIDVAData(getData().kP, iField.getNumber(), getData().kD, getData().kV, getData().kA);
+        PIDVAData data = new PIDVAData(dataOrDefault.get().kP, iField.getNumber(), dataOrDefault.get().kD, dataOrDefault.get().kV, dataOrDefault.get().kA);
         setData(data);
     }
 
     @FXML
     private void setD() {
-        PIDVAData data = new PIDVAData(getData().kP, getData().kI, dField.getNumber(), getData().kV, getData().kA);
+        PIDVAData data = new PIDVAData(dataOrDefault.get().kP, dataOrDefault.get().kI, dField.getNumber(), dataOrDefault.get().kV, dataOrDefault.get().kA);
         setData(data);
     }
 
     @FXML
     private void setV() {
-        PIDVAData data = new PIDVAData(getData().kP, getData().kI, getData().kD, vField.getNumber(), getData().kA);
+        PIDVAData data = new PIDVAData(dataOrDefault.get().kP, dataOrDefault.get().kI, dataOrDefault.get().kD, vField.getNumber(), dataOrDefault.get().kA);
         setData(data);
     }
 
     @FXML
     private void setA() {
-        PIDVAData data = new PIDVAData(getData().kP, getData().kI, getData().kD, getData().kV, aField.getNumber());
+        PIDVAData data = new PIDVAData(dataOrDefault.get().kP, dataOrDefault.get().kI, dataOrDefault.get().kD, dataOrDefault.get().kV, aField.getNumber());
         setData(data);
     }
 
