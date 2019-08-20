@@ -11,6 +11,8 @@ public final class PIDVADataType extends ComplexDataType<PIDVAData> {
     
     private static final String NAME = "PIDVA Gains";
 
+    public static final PIDVADataType Instance = new PIDVADataType();
+
     public PIDVADataType() {
         super(NAME, PIDVAData.class);
     }

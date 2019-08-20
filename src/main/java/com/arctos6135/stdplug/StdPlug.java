@@ -1,10 +1,13 @@
 package com.arctos6135.stdplug;
 
 import java.util.List;
+import java.util.Map;
 
+import com.arctos6135.stdplug.datatypes.PIDVADataType;
 import com.arctos6135.stdplug.widgets.ImageWidget;
 import com.arctos6135.stdplug.widgets.PIDVAGainsWidget;
 
+import edu.wpi.first.shuffleboard.api.data.DataType;
 import edu.wpi.first.shuffleboard.api.plugin.Description;
 import edu.wpi.first.shuffleboard.api.plugin.Plugin;
 import edu.wpi.first.shuffleboard.api.widget.ComponentType;
@@ -15,10 +18,26 @@ public class StdPlug extends Plugin {
 
     @Override
     @SuppressWarnings("rawtypes")
+    public List<DataType> getDataTypes() {
+        return List.of(
+            PIDVADataType.Instance
+        );
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
     public List<ComponentType> getComponents() {
         return List.of(
             WidgetType.forAnnotatedWidget(ImageWidget.class),
             WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class)
+        );
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public Map<DataType, ComponentType> getDefaultComponents() {
+        return Map.of(
+            PIDVADataType.Instance, WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class)
         );
     }
 }
