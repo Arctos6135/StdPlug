@@ -9,7 +9,7 @@
 
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.arctos6135.stdplug.widgets.PIDVAGainsWidget" fx:id="root"
-          hgap="4" vgap="4">
+          hgap="4" vgap="4" minHeight="235" prefHeight="235">
     <padding>
         <Insets top="8" bottom="8" left="16" right="16"/>
     </padding>
