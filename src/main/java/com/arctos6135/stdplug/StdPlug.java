@@ -6,6 +6,7 @@ import java.util.Map;
 import com.arctos6135.stdplug.datatypes.PIDVADPDataType;
 import com.arctos6135.stdplug.datatypes.PIDVADataType;
 import com.arctos6135.stdplug.widgets.ImageWidget;
+import com.arctos6135.stdplug.widgets.MJPEGStreamViewerWidget;
 import com.arctos6135.stdplug.widgets.PIDVAGainsWidget;
 
 import edu.wpi.first.shuffleboard.api.data.DataType;
@@ -31,7 +32,8 @@ public class StdPlug extends Plugin {
     public List<ComponentType> getComponents() {
         return List.of(
             WidgetType.forAnnotatedWidget(ImageWidget.class),
-            WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class)
+            WidgetType.forAnnotatedWidget(PIDVAGainsWidget.class),
+            WidgetType.forAnnotatedWidget(MJPEGStreamViewerWidget.class)
         );
     }
 

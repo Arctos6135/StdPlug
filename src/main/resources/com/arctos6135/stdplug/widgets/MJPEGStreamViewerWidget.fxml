@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.arctos6135.stdplug.widgets.MJPEGStreamViewerWidget" fx:id="root"
+          hgap="4" vgap="4" minHeight="350" prefHeight="350" minWidth="400" prefWidth="400">
+    <padding>
+        <Insets top="6" bottom="6" left="6" right="6"/>
+    </padding>
+    <columnConstraints>
+        <ColumnConstraints minWidth="40" prefWidth="40"/>
+        <ColumnConstraints maxWidth="Infinity"/>
+    </columnConstraints>
+
+    <Canvas fx:id="canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow = "ALWAYS"
+           GridPane.columnSpan="4"/>
+    
+    <Label text="FPS:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
+    <TextField fx:id="fpsField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" 
+               GridPane.hgrow="SOMETIMES" GridPane.vgrow = "NEVER"/>
+
+    <Label text="Mbps:" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
+    <TextField fx:id="mbpsField" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1"
+               GridPane.hgrow="SOMETIMES" GridPane.vgrow = "NEVER"/>
+</GridPane>

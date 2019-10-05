@@ -103,4 +103,6 @@ public final class StdPlugWidgets {
      * @see StdPlugDataTypes#PIDVADP_GAINS
      */
     public static final String PIDVA_GAINS = "PIDVA Gains";
+
+    public static final String MJPEG_STREAM_VIEWER = "MJPEG Stream Viewer";
 }
