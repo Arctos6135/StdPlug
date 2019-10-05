@@ -67,6 +67,7 @@ tasks.withType(Javadoc) {
     exclude 'com/arctos6135/stdplug/data/*'
     exclude 'com/arctos6135/stdplug/datatypes/*'
     exclude 'com/arctos6135/stdplug/widgets/*'
+    exclude 'com/arctos6135/stdplug/util/*'
 
     doLast {
         // Since the introduction of modules in Java 9, the Javadoc search functionality would break if the

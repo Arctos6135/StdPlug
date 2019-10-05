@@ -11,4 +11,5 @@
     <suppress files="src[\\\/]main[\\\/]java[\\\/]com[\\\/]arctos6135[\\\/]stdplug[\\\/]data" checks="" />
     <suppress files="src[\\\/]main[\\\/]java[\\\/]com[\\\/]arctos6135[\\\/]stdplug[\\\/]datatypes" checks="" />
     <suppress files="src[\\\/]main[\\\/]java[\\\/]com[\\\/]arctos6135[\\\/]stdplug[\\\/]widgets" checks="" />
+    <suppress files="src[\\\/]main[\\\/]java[\\\/]com[\\\/]arctos6135[\\\/]stdplug[\\\/]util" checks="" />
 </suppressions>
