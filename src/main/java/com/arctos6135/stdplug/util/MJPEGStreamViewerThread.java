@@ -1,6 +1,5 @@
 package com.arctos6135.stdplug.util;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,10 +7,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import javax.imageio.ImageIO;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.image.Image;
 
 /**
  * This thread runs in the background and receives image data from an MJPEG stream.
@@ -24,7 +22,7 @@ public class MJPEGStreamViewerThread extends Thread {
     private static final int[] END_IMAGE_BYTES = { 0xFF, 0xD9 };
 
     // Other code can bind to this property to be updated when a new frame arrives
-    private ObjectProperty<BufferedImage> imgProperty = new SimpleObjectProperty<>(null);
+    private ObjectProperty<Image> imgProperty = new SimpleObjectProperty<>(null);
 
     // The URL of the stream
     private String streamURL;
@@ -45,6 +43,7 @@ public class MJPEGStreamViewerThread extends Thread {
      */
     public MJPEGStreamViewerThread(String streamURL) {
         super();
+        System.out.println("New instance created");
         this.streamURL = streamURL;
     }
 
@@ -62,7 +61,7 @@ public class MJPEGStreamViewerThread extends Thread {
      * 
      * @return The property containing the current frame.
      */
-    public ObjectProperty<BufferedImage> getImageProperty() {
+    public ObjectProperty<Image> getImageProperty() {
         return imgProperty;
     }
 
@@ -95,31 +94,45 @@ public class MJPEGStreamViewerThread extends Thread {
     private InputStream waitForImageStream() {
         // Wait forever if not interrupted
         while(!interrupted()) {
-            try {
-                URL url = new URL(streamURL);
-                URLConnection conn = url.openConnection();
-                
-                conn.setConnectTimeout(500);
-                conn.setReadTimeout(5000);
-                
-                InputStream stream = conn.getInputStream();
-                System.out.println("Successfully connected to " + streamURL);
-                return stream;
-            }
-            catch(IOException e) {
-                System.err.println("Failed to connect to " + streamURL);
-                e.printStackTrace();
-                
-                imgProperty.set(null);
+            if(streamURL == null || streamURL == "") {
                 try {
-                    // Wait half a second before retrying
-                    Thread.sleep(500);
+                    // Wait a second before retrying
+                    Thread.sleep(1000);
                 }
                 catch(InterruptedException e1) {
                     // Copied from SmartDashboard source code
                     // Not sure what this does but too scared to remove
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e1);
+                }
+            }
+            else {
+                try {
+                    URL url = new URL(streamURL);
+                    URLConnection conn = url.openConnection();
+                    
+                    conn.setConnectTimeout(500);
+                    conn.setReadTimeout(5000);
+                    
+                    InputStream stream = conn.getInputStream();
+                    System.out.println("Successfully connected to " + streamURL);
+                    return stream;
+                }
+                catch(IOException e) {
+                    System.err.println("Failed to connect to " + streamURL);
+                    e.printStackTrace();
+                    
+                    imgProperty.set(null);
+                    try {
+                        // Wait a second before retrying
+                        Thread.sleep(1000);
+                    }
+                    catch(InterruptedException e1) {
+                        // Copied from SmartDashboard source code
+                        // Not sure what this does but too scared to remove
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e1);
+                    }
                 }
             }
         }
@@ -209,7 +222,7 @@ public class MJPEGStreamViewerThread extends Thread {
                     lastFrame = System.currentTimeMillis();
                     // Update the image
                     ByteArrayInputStream tmpStream = new ByteArrayInputStream(imgBuf.toByteArray());
-                    imgProperty.set(ImageIO.read(tmpStream));
+                    imgProperty.set(new Image(tmpStream));
                 }
             }
             catch(IOException e) {

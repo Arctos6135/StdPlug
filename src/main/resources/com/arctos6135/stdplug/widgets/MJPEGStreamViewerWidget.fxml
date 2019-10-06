@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 
+<?import com.arctos6135.stdplug.util.ResizableCanvas?>
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
 
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.arctos6135.stdplug.widgets.MJPEGStreamViewerWidget" fx:id="root"
@@ -18,8 +21,10 @@
         <ColumnConstraints maxWidth="Infinity"/>
     </columnConstraints>
 
-    <Canvas fx:id="canvas" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow = "ALWAYS"
-           GridPane.columnSpan="4"/>
+    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow = "ALWAYS"
+               GridPane.columnSpan="4" fx:id="imgParentPane">
+        <ResizableCanvas fx:id="img"/>
+    </StackPane>
     
     <Label text="FPS:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
     <TextField fx:id="fpsField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" 
