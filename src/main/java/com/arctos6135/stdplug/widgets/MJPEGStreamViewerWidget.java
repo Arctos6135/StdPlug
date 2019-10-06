@@ -17,6 +17,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
@@ -38,7 +39,7 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
     private StackPane imgParentPane;
 
     @FXML
-    private ResizableCanvas img;
+    private ResizableCanvas canvas;
 
     @FXML
     private TextField fpsField;
@@ -46,24 +47,60 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
     @FXML
     private TextField mbpsField;
 
+    /**
+     * Draws an image onto the canvas. Respects aspect ratio options.
+     * @param img The image to draw
+     */
+    private void drawImage(Image img) {
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        // If keep aspect ratio is not set then just draw directly
+        if(!keepAspectRatio.get()) {
+            gc.drawImage(img, 0, 0, canvas.getWidth(), canvas.getHeight());
+        }
+        else {
+
+            double aspectRatio = img.getWidth() / img.getHeight();
+            // If the image was stretched to fit the height, how wide it would be
+            double scaledWidth = canvas.getHeight() * aspectRatio;
+
+            // The image would be too wide, so scale it so that it only fits the width
+            if(scaledWidth > canvas.getWidth()) {
+                double scaledHeight = canvas.getWidth() / aspectRatio;
+                
+                // Center it
+                gc.drawImage(img, 0, (canvas.getHeight() - scaledHeight) / 2, canvas.getWidth(), scaledHeight);
+            }
+            // The image would fit, so just use the calculated scaled width
+            else {
+                gc.drawImage(img, (canvas.getWidth() - scaledWidth) / 2, 0, scaledWidth, canvas.getHeight());
+            }
+        }
+    }
+
     @FXML
     private void initialize() {
-        gc = img.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
 
         // Set the minimum size
         // This is required, otherwise it won't resize properly when getting smaller
         imgParentPane.setMinSize(0, 0);
         // Set up the resizable canvas
-        img.widthProperty().bind(imgParentPane.widthProperty());
-        img.heightProperty().bind(imgParentPane.heightProperty());
+        canvas.widthProperty().bind(imgParentPane.widthProperty());
+        canvas.heightProperty().bind(imgParentPane.heightProperty());
 
-        ChangeListener<Number> resizeListener = (observable, oldValue, newValue) -> {
+        // Add a change listener to the size of the canvas and aspect ratio
+        ChangeListener<Object> resizeListener = (observable, oldValue, newValue) -> {
+            // If the settings change, redraw the image
             if(bgThread != null && bgThread.getImageProperty().get() != null) {
-                gc.drawImage(MJPEGStreamViewerThread.NO_CONNECTION_IMG, 0.0, 0.0, img.getWidth(), img.getHeight());
+                drawImage(bgThread.getImageProperty().get());
+            }
+            else {
+                drawImage(MJPEGStreamViewerThread.NO_CONNECTION_IMG);
             }
         };
-        img.widthProperty().addListener(resizeListener);
-        img.heightProperty().addListener(resizeListener);
+        canvas.widthProperty().addListener(resizeListener);
+        canvas.heightProperty().addListener(resizeListener);
+        keepAspectRatio.addListener(resizeListener);
 
         // Initialize the background thread
         bgThread = new MJPEGStreamViewerThread(dataProperty().get());
@@ -73,7 +110,7 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
             bgThread.updateStreamURL(newValue);
         });
         bgThread.getImageProperty().addListener((observable, oldValue, newValue) -> {
-            gc.drawImage(newValue, 0.0, 0.0, img.getWidth(), img.getHeight());
+            drawImage(newValue);
         });
         bgThread.start();
     }

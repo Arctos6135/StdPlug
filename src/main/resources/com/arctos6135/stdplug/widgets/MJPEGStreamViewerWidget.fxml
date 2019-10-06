@@ -23,7 +23,7 @@
 
     <StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow = "ALWAYS"
                GridPane.columnSpan="4" fx:id="imgParentPane">
-        <ResizableCanvas fx:id="img"/>
+        <ResizableCanvas fx:id="canvas"/>
     </StackPane>
     
     <Label text="FPS:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
