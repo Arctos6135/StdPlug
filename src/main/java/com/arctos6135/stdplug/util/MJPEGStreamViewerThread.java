@@ -7,7 +7,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 
@@ -23,8 +27,15 @@ public class MJPEGStreamViewerThread extends Thread {
     private static final int[] START_IMAGE_BYTES = { 0xFF, 0xD8 };
     private static final int[] END_IMAGE_BYTES = { 0xFF, 0xD9 };
 
+    // Conversion ratio from bytes per second to megabits per second
+    private static final double BPS_TO_MBPS = 8.0 / 1024.0 / 1024.0;
+
     // Other code can bind to this property to be updated when a new frame arrives
     private ObjectProperty<Image> imgProperty = new SimpleObjectProperty<>(null);
+    // Other code can bind to this property to be updated when the FPS is calculated
+    private IntegerProperty fpsProperty = new SimpleIntegerProperty(-1);
+    // Other code can bind to this property to be updated when the bandwidth is calculated
+    private DoubleProperty mbpsProperty = new SimpleDoubleProperty(-1);
 
     // The URL of the stream
     private String streamURL;
@@ -76,6 +87,24 @@ public class MJPEGStreamViewerThread extends Thread {
     }
 
     /**
+     * Retrieves the property containing the FPS.
+     * 
+     * @return The property containing the FPS.
+     */
+    public IntegerProperty getFPSProperty() {
+        return fpsProperty;
+    }
+
+    /**
+     * Retrieves the property containing the bandwidth in Mbps.
+     * 
+     * @return The property containing the bandwidth
+     */
+    public DoubleProperty getMbpsProperty() {
+        return mbpsProperty;
+    }
+
+    /**
      * Sets the minimum time to wait between two frames, in milliseconds.
      * @param minRefreshInterval The minimum time between frames
      */
@@ -106,6 +135,8 @@ public class MJPEGStreamViewerThread extends Thread {
         while(!interrupted()) {
             if(streamURL == null || streamURL == "") {
                 imgProperty.set(NO_CONNECTION_IMG);
+                fpsProperty.set(-1);
+                mbpsProperty.set(-1);
                 try {
                     // Wait a second before retrying
                     Thread.sleep(1000);
@@ -134,6 +165,8 @@ public class MJPEGStreamViewerThread extends Thread {
                     e.printStackTrace();
                     
                     imgProperty.set(NO_CONNECTION_IMG);
+                    fpsProperty.set(-1);
+                    mbpsProperty.set(-1);
                     try {
                         // Wait a second before retrying
                         Thread.sleep(1000);
@@ -164,8 +197,9 @@ public class MJPEGStreamViewerThread extends Thread {
         super.interrupt();
     }
 
-    private static void skipUntil(InputStream stream, int[] indicator) throws IOException {
-        for(int i = 0; i < indicator.length; ) {
+    private static long skipUntil(InputStream stream, int[] indicator) throws IOException {
+        long bytesRead = 0;
+        for(int i = 0; i < indicator.length; bytesRead++) {
             int b = stream.read();
             if(b == -1) {
                 throw new IOException("End of stream reached");
@@ -177,10 +211,12 @@ public class MJPEGStreamViewerThread extends Thread {
                 i = 0;
             }
         }
+        return bytesRead;
     }
     
-    private static void readUntil(InputStream stream, int[] indicator, ByteArrayOutputStream out) throws IOException {
-        for(int i = 0; i < indicator.length; ) {
+    private static long readUntil(InputStream stream, int[] indicator, ByteArrayOutputStream out) throws IOException {
+        long bytesRead = 0;
+        for(int i = 0; i < indicator.length; bytesRead ++) {
             int b = stream.read();
             if(b == -1) {
                 throw new IOException("End of stream reached");
@@ -197,12 +233,16 @@ public class MJPEGStreamViewerThread extends Thread {
                 i = 0;
             }
         }
+        return bytesRead;
     }
 
     @Override
     public void run() {
         ByteArrayOutputStream imgBuf = new ByteArrayOutputStream();
         long lastFrame = 0;
+        long lastStatCheck = 0;
+        int fpsCounter = 0;
+        long mbpsCounter = 0;
 
         while(!interrupted()) {
             imgStream = waitForImageStream();
@@ -215,20 +255,29 @@ public class MJPEGStreamViewerThread extends Thread {
                     }
                     // Clear the stream
                     // We don't want any old data
+                    mbpsCounter += imgStream.available();
                     imgStream.skip(imgStream.available());
 
                     // Clear the image data
                     imgBuf.reset();
                     // Skip until the start of the actual image
-                    skipUntil(imgStream, START_IMAGE_BYTES);
+                    mbpsCounter += skipUntil(imgStream, START_IMAGE_BYTES);
                     // Write the image start bytes into the image
                     for(int b : START_IMAGE_BYTES) {
                         imgBuf.write((byte) b);
                     }
                     // Read in the rest
-                    readUntil(imgStream, END_IMAGE_BYTES, imgBuf);
+                    mbpsCounter += readUntil(imgStream, END_IMAGE_BYTES, imgBuf);
 
-                    // TODO: Bandwidth and FPS calculation
+                    // Calculate FPS and Mbps
+                    fpsCounter ++;
+                    if(System.currentTimeMillis() - lastStatCheck >= 1000) {
+                        fpsProperty.set(fpsCounter);
+                        fpsCounter = 0;
+                        mbpsProperty.set(mbpsCounter * BPS_TO_MBPS);
+                        mbpsCounter = 0;
+                        lastStatCheck = System.currentTimeMillis();
+                    }
 
                     lastFrame = System.currentTimeMillis();
                     // Update the image
@@ -238,6 +287,8 @@ public class MJPEGStreamViewerThread extends Thread {
             }
             catch(IOException e) {
                 imgProperty.set(NO_CONNECTION_IMG);
+                fpsProperty.set(-1);
+                mbpsProperty.set(-1);
                 System.err.println("Error while reading stream:");
                 e.printStackTrace();
             }

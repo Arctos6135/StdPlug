@@ -27,10 +27,10 @@
     </StackPane>
     
     <Label text="FPS:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
-    <TextField fx:id="fpsField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" 
+    <TextField text="N/A" fx:id="fpsField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" 
                GridPane.hgrow="SOMETIMES" GridPane.vgrow = "NEVER"/>
 
     <Label text="Mbps:" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
-    <TextField fx:id="mbpsField" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1"
+    <TextField text="N/A" fx:id="mbpsField" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1"
                GridPane.hgrow="SOMETIMES" GridPane.vgrow = "NEVER"/>
 </GridPane>

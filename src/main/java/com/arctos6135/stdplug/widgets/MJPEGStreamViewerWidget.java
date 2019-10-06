@@ -26,7 +26,7 @@ import javafx.scene.layout.StackPane;
 @ParametrizedController("MJPEGStreamViewerWidget.fxml")
 public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
 
-    protected BooleanProperty keepAspectRatio = new SimpleBooleanProperty(false);
+    protected BooleanProperty keepAspectRatio = new SimpleBooleanProperty(true);
 
     private MJPEGStreamViewerThread bgThread;
 
@@ -109,8 +109,26 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
         dataProperty().addListener((observable, oldValue, newValue) -> {
             bgThread.updateStreamURL(newValue);
         });
+        // Listen for new frames and draw them
         bgThread.getImageProperty().addListener((observable, oldValue, newValue) -> {
             drawImage(newValue);
+        });
+        // Listen for FPS and Mbps updates
+        bgThread.getFPSProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() == -1) {
+                fpsField.setText("N/A");
+            }
+            else {
+                fpsField.setText(newValue.toString());
+            }
+        });
+        bgThread.getMbpsProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() == -1) {
+                mbpsField.setText("N/A");
+            }
+            else {
+                mbpsField.setText(newValue.toString());
+            }
         });
         bgThread.start();
     }
