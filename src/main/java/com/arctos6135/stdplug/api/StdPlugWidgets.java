@@ -103,4 +103,41 @@ public final class StdPlugWidgets {
      * @see StdPlugDataTypes#PIDVADP_GAINS
      */
     public static final String PIDVA_GAINS = "PIDVA Gains";
+    
+    /**
+     * Displays an MJPEG video stream.
+     * <p>
+     * The stream is specified by an URL.
+     * </p>
+     * <p>
+     * Supported types:
+     * <ul>
+     * <li>String</li>
+     * </ul>
+     * Custom properties:
+     * <table>
+     * <tr>
+     * <th>Name</th>
+     * <th>Type</th>
+     * <th>Default Value</th>
+     * <th>Notes</th>
+     * </tr>
+     * <tr>
+     * <td>Keep Aspect Ratio</td>
+     * <td>Boolean</td>
+     * <td>true</td>
+     * <td>If set, the aspect ratio of the stream will be kept</td>
+     * </tr>
+     * <tr>
+     * <td>Show Stats</td>
+     * <td>Boolean</td>
+     * <td>true</td>
+     * <td>If set, the FPS and bandwidth (Mbps) will be shown</td>
+     * </tr>
+     * </table>
+     * </p>
+     * 
+     * @since 0.2.0
+     */
+    public static final String MJPEG_STREAM_VIEWER = "MJPEG Stream Viewer";
 }

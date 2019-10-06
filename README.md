@@ -8,10 +8,11 @@
 
 StdPlug is the Arctos 6135 "Standard" Shuffleboard Plugin. Currently, it offers these widgets:
 
-| Name        | Description                                       | Accepted Data Types        |
-| ----------- | ------------------------------------------------- | -------------------------- |
-| Image       | Displays a static image when given its full path. | String                     |
-| PIDVA Gains | Displays a set of PIDVA or PIDVA + DP gains.      | PIDVA Gains, PIDVADP Gains |
+| Name                | Description                                       | Accepted Data Types        |
+| ------------------- | ------------------------------------------------- | -------------------------- |
+| Image               | Displays a static image when given its full path. | String                     |
+| PIDVA Gains         | Displays a set of PIDVA or PIDVA + DP gains.      | PIDVA Gains, PIDVADP Gains |
+| MJPEG Stream Viewer | Displays an MJPEG video stream.                   | String                     |
 
 And these data types:
 
@@ -41,7 +42,7 @@ dependencies {
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()
 
-    compile files('lib/StdPlug-API-0.1.0.jar')
+    compile files('lib/StdPlug-API-0.2.0.jar')
     
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
