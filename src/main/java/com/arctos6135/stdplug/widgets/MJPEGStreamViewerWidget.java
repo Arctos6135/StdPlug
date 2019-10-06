@@ -13,6 +13,7 @@ import edu.wpi.first.shuffleboard.api.widget.ParametrizedController;
 import edu.wpi.first.shuffleboard.api.widget.SimpleAnnotatedWidget;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextField;
@@ -23,7 +24,7 @@ import javafx.scene.layout.StackPane;
         String.class }, summary = "Displays an MJPEG video stream.")
 @ParametrizedController("MJPEGStreamViewerWidget.fxml")
 public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
-    
+
     protected BooleanProperty keepAspectRatio = new SimpleBooleanProperty(false);
 
     private MJPEGStreamViewerThread bgThread;
@@ -47,6 +48,8 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
 
     @FXML
     private void initialize() {
+        gc = img.getGraphicsContext2D();
+
         // Set the minimum size
         // This is required, otherwise it won't resize properly when getting smaller
         imgParentPane.setMinSize(0, 0);
@@ -54,34 +57,31 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
         img.widthProperty().bind(imgParentPane.widthProperty());
         img.heightProperty().bind(imgParentPane.heightProperty());
 
+        ChangeListener<Number> resizeListener = (observable, oldValue, newValue) -> {
+            if(bgThread != null && bgThread.getImageProperty().get() != null) {
+                gc.drawImage(MJPEGStreamViewerThread.NO_CONNECTION_IMG, 0.0, 0.0, img.getWidth(), img.getHeight());
+            }
+        };
+        img.widthProperty().addListener(resizeListener);
+        img.heightProperty().addListener(resizeListener);
+
         // Initialize the background thread
         bgThread = new MJPEGStreamViewerThread(dataProperty().get());
-        gc = img.getGraphicsContext2D();
+
         // Update the background thread's stream URL with the property
         dataProperty().addListener((observable, oldValue, newValue) -> {
             bgThread.updateStreamURL(newValue);
         });
-
         bgThread.getImageProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null) {
-                gc.drawImage(newValue, 0.0, 0.0, img.getWidth(), img.getHeight());
-            }
-            else {
-                // TODO: Draw error image
-                System.out.println("Failed to get image!");
-            }
+            gc.drawImage(newValue, 0.0, 0.0, img.getWidth(), img.getHeight());
         });
         bgThread.start();
     }
 
     @Override
     public List<Group> getSettings() {
-        return List.of(
-            Group.of("Stream", 
-                Setting.of("MJPEG Server URL", dataProperty(), String.class),
-                Setting.of("Keep Aspect Ratio", keepAspectRatio, Boolean.class)
-            )
-        );
+        return List.of(Group.of("Stream", Setting.of("MJPEG Server URL", dataProperty(), String.class),
+                Setting.of("Keep Aspect Ratio", keepAspectRatio, Boolean.class)));
     }
 
     @Override

@@ -16,6 +16,8 @@ import javafx.scene.image.Image;
  */
 public class MJPEGStreamViewerThread extends Thread {
 
+    public static final Image NO_CONNECTION_IMG = new Image(MJPEGStreamViewerThread.class.getResourceAsStream("/noconnection.gif"));
+
     // The bytes for the start image and end image tags in a JPEG image
     // This is how we separate each image
     private static final int[] START_IMAGE_BYTES = { 0xFF, 0xD8 };
@@ -43,8 +45,11 @@ public class MJPEGStreamViewerThread extends Thread {
      */
     public MJPEGStreamViewerThread(String streamURL) {
         super();
-        System.out.println("New instance created");
-        this.streamURL = streamURL;
+        // Make this a daemon thread to prevent it from keeping the VM alive
+        setDaemon(true);
+        if(streamURL != null) {
+            this.streamURL = streamURL.strip();
+        }
     }
 
     /**
@@ -52,7 +57,12 @@ public class MJPEGStreamViewerThread extends Thread {
      * @param streamURL The new URL of the stream.
      */
     public void updateStreamURL(String streamURL) {
-        this.streamURL = streamURL;
+        if(streamURL != null) {
+            this.streamURL = streamURL.strip();
+        }
+        else {
+            this.streamURL = null;
+        }
         streamURLUpdated = true;
     }
 
@@ -95,6 +105,7 @@ public class MJPEGStreamViewerThread extends Thread {
         // Wait forever if not interrupted
         while(!interrupted()) {
             if(streamURL == null || streamURL == "") {
+                imgProperty.set(NO_CONNECTION_IMG);
                 try {
                     // Wait a second before retrying
                     Thread.sleep(1000);
@@ -122,7 +133,7 @@ public class MJPEGStreamViewerThread extends Thread {
                     System.err.println("Failed to connect to " + streamURL);
                     e.printStackTrace();
                     
-                    imgProperty.set(null);
+                    imgProperty.set(NO_CONNECTION_IMG);
                     try {
                         // Wait a second before retrying
                         Thread.sleep(1000);
@@ -226,7 +237,7 @@ public class MJPEGStreamViewerThread extends Thread {
                 }
             }
             catch(IOException e) {
-                imgProperty.set(null);
+                imgProperty.set(NO_CONNECTION_IMG);
                 System.err.println("Error while reading stream:");
                 e.printStackTrace();
             }
