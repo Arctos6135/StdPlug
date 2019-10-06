@@ -16,6 +16,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -27,6 +28,8 @@ import javafx.scene.layout.StackPane;
 public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
 
     protected BooleanProperty keepAspectRatio = new SimpleBooleanProperty(true);
+
+    protected BooleanProperty showStats = new SimpleBooleanProperty(true);
 
     private MJPEGStreamViewerThread bgThread;
 
@@ -47,26 +50,32 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
     @FXML
     private TextField mbpsField;
 
+    @FXML
+    private Label fpsLabel;
+
+    @FXML
+    private Label mbpsLabel;
+
     /**
      * Draws an image onto the canvas. Respects aspect ratio options.
+     * 
      * @param img The image to draw
      */
     private void drawImage(Image img) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         // If keep aspect ratio is not set then just draw directly
-        if(!keepAspectRatio.get()) {
+        if (!keepAspectRatio.get()) {
             gc.drawImage(img, 0, 0, canvas.getWidth(), canvas.getHeight());
-        }
-        else {
+        } else {
 
             double aspectRatio = img.getWidth() / img.getHeight();
             // If the image was stretched to fit the height, how wide it would be
             double scaledWidth = canvas.getHeight() * aspectRatio;
 
             // The image would be too wide, so scale it so that it only fits the width
-            if(scaledWidth > canvas.getWidth()) {
+            if (scaledWidth > canvas.getWidth()) {
                 double scaledHeight = canvas.getWidth() / aspectRatio;
-                
+
                 // Center it
                 gc.drawImage(img, 0, (canvas.getHeight() - scaledHeight) / 2, canvas.getWidth(), scaledHeight);
             }
@@ -91,16 +100,29 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
         // Add a change listener to the size of the canvas and aspect ratio
         ChangeListener<Object> resizeListener = (observable, oldValue, newValue) -> {
             // If the settings change, redraw the image
-            if(bgThread != null && bgThread.getImageProperty().get() != null) {
+            if (bgThread != null && bgThread.getImageProperty().get() != null) {
                 drawImage(bgThread.getImageProperty().get());
-            }
-            else {
+            } else {
                 drawImage(MJPEGStreamViewerThread.NO_CONNECTION_IMG);
             }
         };
         canvas.widthProperty().addListener(resizeListener);
         canvas.heightProperty().addListener(resizeListener);
         keepAspectRatio.addListener(resizeListener);
+
+        // Bind the managed property to the visible property so they're updated at once
+        // So that when the node is hidden it also doesn't take up space
+        fpsLabel.managedProperty().bind(fpsLabel.visibleProperty());
+        fpsField.managedProperty().bind(fpsField.visibleProperty());
+        mbpsLabel.managedProperty().bind(mbpsLabel.visibleProperty());
+        mbpsField.managedProperty().bind(mbpsField.visibleProperty());
+        // Add a listener to show/hide them
+        showStats.addListener((observable, oldValue, newValue) -> {
+            fpsLabel.setVisible(newValue);
+            fpsField.setVisible(newValue);
+            mbpsLabel.setVisible(newValue);
+            mbpsField.setVisible(newValue);
+        });
 
         // Initialize the background thread
         bgThread = new MJPEGStreamViewerThread(dataProperty().get());
@@ -115,18 +137,16 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
         });
         // Listen for FPS and Mbps updates
         bgThread.getFPSProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() == -1) {
+            if (newValue.intValue() == -1) {
                 fpsField.setText("N/A");
-            }
-            else {
+            } else {
                 fpsField.setText(newValue.toString());
             }
         });
         bgThread.getMbpsProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.intValue() == -1) {
+            if (newValue.intValue() == -1) {
                 mbpsField.setText("N/A");
-            }
-            else {
+            } else {
                 mbpsField.setText(newValue.toString());
             }
         });
@@ -135,8 +155,10 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
 
     @Override
     public List<Group> getSettings() {
-        return List.of(Group.of("Stream", Setting.of("MJPEG Server URL", dataProperty(), String.class),
-                Setting.of("Keep Aspect Ratio", keepAspectRatio, Boolean.class)));
+        return List.of(
+                Group.of("Stream", Setting.of("MJPEG Server URL", dataProperty(), String.class),
+                        Setting.of("Keep Aspect Ratio", keepAspectRatio, Boolean.class)),
+                Group.of("Appearance", Setting.of("Show Stats", showStats, Boolean.class)));
     }
 
     @Override
