@@ -38,17 +38,17 @@ public class MJPEGStreamViewerThread extends Thread {
     private DoubleProperty mbpsProperty = new SimpleDoubleProperty(-1);
 
     // The URL of the stream
-    private String streamURL;
+    volatile private String streamURL;
 
     // Whether or not the URL has been updated
     // If this is true then a new connection has to be opened
-    private boolean streamURLUpdated = true;
+    volatile private boolean streamURLUpdated = true;
 
     // The stream of the connection that we can get image data from
     private InputStream imgStream;
 
     // The minimum time between two frames
-    private long minRefreshInterval = 10;
+    volatile private long minRefreshInterval = 10;
 
     /**
      * Creates a new stream viewer thread with the specified URL.
@@ -291,12 +291,29 @@ public class MJPEGStreamViewerThread extends Thread {
                 mbpsProperty.set(-1);
                 System.err.println("Error while reading stream:");
                 e.printStackTrace();
+
+                try {
+                    // This magical delay here fixes a magical bug where reading from the stream would give -1
+                    Thread.sleep(100);
+                }
+                catch(InterruptedException e1) {
+                    // Copied from SmartDashboard source code
+                    // Not sure what this does but too scared to remove
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
             }
             catch(InterruptedException e) {
                 // Copied from SmartDashboard source code
                 // Not sure what this does but too scared to remove
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
+            }
+            catch(IllegalArgumentException e) {
+                // I have no idea why the heck this even happens
+                // But either way we gotta recover
+                System.err.println("Error while reading stream:");
+                e.printStackTrace();
             }
             finally {
                 // Clean up the old stream
