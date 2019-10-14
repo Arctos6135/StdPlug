@@ -160,7 +160,9 @@ public class MJPEGStreamViewerThread extends Thread {
                     System.out.println("Successfully connected to " + streamURL);
                     return stream;
                 }
-                catch(IOException e) {
+                // Catch any possible exceptions 
+                // This thread shouldn't ever die
+                catch(Exception e) {
                     System.err.println("Failed to connect to " + streamURL);
                     e.printStackTrace();
                     
@@ -309,9 +311,9 @@ public class MJPEGStreamViewerThread extends Thread {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
-            catch(IllegalArgumentException e) {
-                // I have no idea why the heck this even happens
-                // But either way we gotta recover
+            catch(Exception e) {
+                // Something really bad just happened
+                // Recover anyways. Who cares!
                 System.err.println("Error while reading stream:");
                 e.printStackTrace();
             }
