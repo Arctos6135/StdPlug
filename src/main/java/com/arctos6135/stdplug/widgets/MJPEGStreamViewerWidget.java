@@ -3,7 +3,7 @@ package com.arctos6135.stdplug.widgets;
 import java.util.List;
 
 import com.arctos6135.stdplug.api.StdPlugWidgets;
-import com.arctos6135.stdplug.util.MJPEGStreamViewerThread;
+import com.arctos6135.stdplug.util.MJPEGStreamViewerTask;
 import com.arctos6135.stdplug.util.ResizableCanvas;
 
 import edu.wpi.first.shuffleboard.api.prefs.Group;
@@ -16,7 +16,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -31,9 +31,12 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
 
     protected BooleanProperty showStats = new SimpleBooleanProperty(true);
 
-    private MJPEGStreamViewerThread bgThread;
+    private MJPEGStreamViewerTask task = null;
 
     private GraphicsContext gc;
+
+    private ChangeListener<Image> frameListener;
+    private ChangeListener<String> statListener;
 
     @FXML
     private Pane root;
@@ -45,16 +48,10 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
     private ResizableCanvas canvas;
 
     @FXML
-    private TextField fpsField;
+    private TextField statsField;
 
     @FXML
-    private TextField mbpsField;
-
-    @FXML
-    private Label fpsLabel;
-
-    @FXML
-    private Label mbpsLabel;
+    private Button toggleWorkerButton;
 
     /**
      * Draws an image onto the canvas. Respects aspect ratio options.
@@ -100,10 +97,10 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
         // Add a change listener to the size of the canvas and aspect ratio
         ChangeListener<Object> resizeListener = (observable, oldValue, newValue) -> {
             // If the settings change, redraw the image
-            if (bgThread != null && bgThread.getImageProperty().get() != null) {
-                drawImage(bgThread.getImageProperty().get());
+            if (task != null && task.getValue() != null) {
+                drawImage(task.getValue());
             } else {
-                drawImage(MJPEGStreamViewerThread.NO_CONNECTION_IMG);
+                drawImage(MJPEGStreamViewerTask.NO_CONNECTION_IMG);
             }
         };
         canvas.widthProperty().addListener(resizeListener);
@@ -112,45 +109,61 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
 
         // Bind the managed property to the visible property so they're updated at once
         // So that when the node is hidden it also doesn't take up space
-        fpsLabel.managedProperty().bind(fpsLabel.visibleProperty());
-        fpsField.managedProperty().bind(fpsField.visibleProperty());
-        mbpsLabel.managedProperty().bind(mbpsLabel.visibleProperty());
-        mbpsField.managedProperty().bind(mbpsField.visibleProperty());
+        statsField.managedProperty().bind(statsField.visibleProperty());
+        toggleWorkerButton.managedProperty().bind(toggleWorkerButton.visibleProperty());
         // Add a listener to show/hide them
         showStats.addListener((observable, oldValue, newValue) -> {
-            fpsLabel.setVisible(newValue);
-            fpsField.setVisible(newValue);
-            mbpsLabel.setVisible(newValue);
-            mbpsField.setVisible(newValue);
+            statsField.setVisible(newValue);
+            toggleWorkerButton.setVisible(newValue);
         });
-
-        // Initialize the background thread
-        bgThread = new MJPEGStreamViewerThread(dataProperty().get());
 
         // Update the background thread's stream URL with the property
         dataProperty().addListener((observable, oldValue, newValue) -> {
-            bgThread.updateStreamURL(newValue);
+            if(task != null) {
+                task.updateStreamURL(newValue);
+            }
         });
-        // Listen for new frames and draw them
-        bgThread.getImageProperty().addListener((observable, oldValue, newValue) -> {
+
+        frameListener = (observable, oldValue, newValue) -> {
             drawImage(newValue);
-        });
-        // Listen for FPS and Mbps updates
-        bgThread.getFPSProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.intValue() == -1) {
-                fpsField.setText("N/A");
-            } else {
-                fpsField.setText(newValue.toString());
+        };
+
+        statListener = (observable, oldValue, newValue) -> {
+            statsField.setText(newValue);
+        };
+    }
+
+    @FXML
+    private void toggleWorker() {
+        if(task == null) {
+            toggleWorkerButton.setText("Stop");
+
+            // Create worker
+            task = new MJPEGStreamViewerTask(dataOrDefault.get());
+            // Listen for new frames and draw them
+            task.valueProperty().addListener(frameListener);
+            // Listen for stats updates
+            task.messageProperty().addListener(statListener);
+            // Start worker
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
+        }
+        else {
+            if(!task.cancel()) {
+                toggleWorkerButton.setText("Error");
+                System.err.println("Error: Stream viewer task cannot be cancelled!");
             }
-        });
-        bgThread.getMbpsProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.intValue() == -1) {
-                mbpsField.setText("N/A");
-            } else {
-                mbpsField.setText(newValue.toString());
+            else {
+                toggleWorkerButton.setText("Start");
+                task.valueProperty().removeListener(frameListener);
+                task.messageProperty().removeListener(statListener);
+                task = null;
+
+                drawImage(MJPEGStreamViewerTask.NO_CONNECTION_IMG);
+                statsField.setText(MJPEGStreamViewerTask.NO_CONNECTION_STR);
             }
-        });
-        bgThread.start();
+        }
     }
 
     @Override

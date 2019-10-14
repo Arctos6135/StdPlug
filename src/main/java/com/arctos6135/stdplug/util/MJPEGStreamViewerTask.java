@@ -216,7 +216,7 @@ public class MJPEGStreamViewerTask extends Task<Image> {
                     // Calculate FPS and Mbps
                     fpsCounter ++;
                     if(System.currentTimeMillis() - lastStatCheck >= 1000) {
-                        updateMessage("FPS: " + fpsCounter + "\tBandwidth: " 
+                        updateMessage("FPS: " + fpsCounter + "       Bandwidth: " 
                                 + String.format("%.3f", mbpsCounter * BPS_TO_MBPS) + "Mbps");
                         fpsCounter = 0;
                         mbpsCounter = 0;

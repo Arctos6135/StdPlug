@@ -4,7 +4,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -17,20 +17,17 @@
         <Insets top="6" bottom="6" left="6" right="6"/>
     </padding>
     <columnConstraints>
-        <ColumnConstraints minWidth="40" prefWidth="40"/>
+        <ColumnConstraints minWidth="40"/>
         <ColumnConstraints maxWidth="Infinity"/>
     </columnConstraints>
 
-    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow = "ALWAYS"
+    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
                GridPane.columnSpan="4" fx:id="imgParentPane">
         <ResizableCanvas fx:id="canvas"/>
     </StackPane>
     
-    <Label text="FPS:" fx:id="fpsLabel" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
-    <TextField text="N/A" fx:id="fpsField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" 
-               GridPane.hgrow="SOMETIMES" GridPane.vgrow = "NEVER"/>
-
-    <Label text="Mbps:" fx:id="mbpsLabel" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow = "NEVER"/>
-    <TextField text="N/A" fx:id="mbpsField" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1"
-               GridPane.hgrow="SOMETIMES" GridPane.vgrow = "NEVER"/>
+    <TextField text="Not Connected" fx:id="statsField" editable="false" GridPane.columnIndex="0" GridPane.rowIndex="1"
+               GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER"/>
+    <Button text="Start" fx:id="toggleWorkerButton" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.hgrow="NEVER"
+            GridPane.vgrow="NEVER" onAction="#toggleWorker"/>
 </GridPane>
