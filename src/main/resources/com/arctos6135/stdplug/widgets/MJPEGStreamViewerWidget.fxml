@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<?import com.arctos6135.stdplug.util.ResizableCanvas?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.arctos6135.stdplug.widgets.MJPEGStreamViewerWidget" fx:id="root"
+          hgap="4" vgap="4" minHeight="220" prefHeight="220" minWidth="200" prefWidth="200">
+    <padding>
+        <Insets top="6" bottom="6" left="6" right="6"/>
+    </padding>
+    <columnConstraints>
+        <ColumnConstraints minWidth="40"/>
+        <ColumnConstraints maxWidth="Infinity"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="40"/>
+        <RowConstraints maxHeight="Infinity"/>
+    </rowConstraints>
+
+    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
+               GridPane.columnSpan="5" fx:id="imgParentPane">
+        <ResizableCanvas fx:id="canvas"/>
+    </StackPane>
+
+    <Label fx:id="fpsLabel" text="FPS:" GridPane.columnIndex="0" GridPane.rowIndex="1" minWidth="40" GridPane.hgrow="NEVER"/>
+    <TextField fx:id="fpsField" text="N/A" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
+    <Label fx:id="bandwidthLabel" text="BW:" GridPane.columnIndex="2" GridPane.rowIndex="1" minWidth="30" GridPane.hgrow="NEVER"/>
+    <TextField fx:id="bandwidthField" text="N/A" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
+    <Button text="Start" fx:id="toggleWorkerButton" GridPane.columnIndex="4" GridPane.rowIndex="1" minWidth="65" GridPane.hgrow="NEVER"
+            GridPane.vgrow="NEVER" onAction="#toggleWorker"/>
+</GridPane>
