@@ -134,6 +134,12 @@ public final class StdPlugWidgets {
      * <td>true</td>
      * <td>If set, the FPS and bandwidth (Mbps) will be shown</td>
      * </tr>
+     * <tr>
+     * <td>Start Stream</td>
+     * <td>Boolean</td>
+     * <td>true</td>
+     * <td>If set, the stream viewer will be started</td>
+     * </tr>
      * </table>
      * </p>
      * 

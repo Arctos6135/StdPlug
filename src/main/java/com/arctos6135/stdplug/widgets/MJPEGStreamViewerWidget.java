@@ -32,12 +32,15 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
 
     protected BooleanProperty showStats = new SimpleBooleanProperty(true);
 
+    protected BooleanProperty startStream = new SimpleBooleanProperty(false);
+
     private MJPEGStreamViewerTask task = null;
 
     private GraphicsContext gc;
 
     private ChangeListener<Image> frameListener;
     private ChangeListener<String> statListener;
+    private ChangeListener<Boolean> startStreamListener;
 
     @FXML
     private Pane root;
@@ -150,12 +153,26 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
             fpsField.setText(stats[0]);
             bandwidthField.setText(stats[1]);
         };
+
+        // Add a listener to the start stream property
+        startStreamListener = (observable, oldValue, newValue) -> {
+            // If set to true and task is not running or set to false and task is running, toggle it
+            if((newValue && task == null) || (!newValue && task != null)) {
+                toggleWorker();
+            }
+        };
+        startStream.addListener(startStreamListener);
     }
 
     @FXML
     private void toggleWorker() {
         if(task == null) {
             toggleWorkerButton.setText("Stop");
+            // Set the start stream property
+            // Unhook the listener first
+            startStream.removeListener(startStreamListener);
+            startStream.set(true);
+            startStream.addListener(startStreamListener);
 
             // Create worker
             task = new MJPEGStreamViewerTask(dataOrDefault.get());
@@ -175,6 +192,9 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
             }
             else {
                 toggleWorkerButton.setText("Start");
+                startStream.removeListener(startStreamListener);
+                startStream.set(false);
+                startStream.addListener(startStreamListener);
                 task.valueProperty().removeListener(frameListener);
                 task.messageProperty().removeListener(statListener);
                 task = null;
@@ -190,7 +210,8 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
     public List<Group> getSettings() {
         return List.of(
                 Group.of("Stream", Setting.of("MJPEG Server URL", dataProperty(), String.class),
-                        Setting.of("Keep Aspect Ratio", keepAspectRatio, Boolean.class)),
+                        Setting.of("Keep Aspect Ratio", keepAspectRatio, Boolean.class),
+                        Setting.of("Start Stream", startStream, Boolean.class)),
                 Group.of("Appearance", Setting.of("Show Stats", showStats, Boolean.class)));
     }
 
