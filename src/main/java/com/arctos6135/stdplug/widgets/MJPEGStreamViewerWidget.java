@@ -17,6 +17,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -48,7 +49,16 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
     private ResizableCanvas canvas;
 
     @FXML
-    private TextField statsField;
+    private Label fpsLabel;
+
+    @FXML
+    private Label bandwidthLabel;
+
+    @FXML
+    private TextField fpsField;
+
+    @FXML
+    private TextField bandwidthField;
 
     @FXML
     private Button toggleWorkerButton;
@@ -107,13 +117,20 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
         canvas.heightProperty().addListener(resizeListener);
         keepAspectRatio.addListener(resizeListener);
 
+        
         // Bind the managed property to the visible property so they're updated at once
         // So that when the node is hidden it also doesn't take up space
-        statsField.managedProperty().bind(statsField.visibleProperty());
+        fpsLabel.managedProperty().bind(fpsLabel.visibleProperty());
+        fpsField.managedProperty().bind(fpsField.visibleProperty());
+        bandwidthLabel.managedProperty().bind(bandwidthLabel.visibleProperty());
+        bandwidthField.managedProperty().bind(bandwidthField.visibleProperty());
         toggleWorkerButton.managedProperty().bind(toggleWorkerButton.visibleProperty());
         // Add a listener to show/hide them
         showStats.addListener((observable, oldValue, newValue) -> {
-            statsField.setVisible(newValue);
+            fpsLabel.setVisible(newValue);
+            fpsField.setVisible(newValue);
+            bandwidthLabel.setVisible(newValue);
+            bandwidthField.setVisible(newValue);
             toggleWorkerButton.setVisible(newValue);
         });
 
@@ -129,7 +146,9 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
         };
 
         statListener = (observable, oldValue, newValue) -> {
-            statsField.setText(newValue);
+            String[] stats = newValue.split(",");
+            fpsField.setText(stats[0]);
+            bandwidthField.setText(stats[1]);
         };
     }
 
@@ -161,7 +180,8 @@ public class MJPEGStreamViewerWidget extends SimpleAnnotatedWidget<String> {
                 task = null;
 
                 drawImage(MJPEGStreamViewerTask.NO_CONNECTION_IMG);
-                statsField.setText(MJPEGStreamViewerTask.NO_CONNECTION_STR);
+                fpsField.setText("N/A");
+                bandwidthField.setText("N/A");
             }
         }
     }

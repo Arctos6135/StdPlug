@@ -17,7 +17,7 @@ import javafx.scene.image.Image;
 public class MJPEGStreamViewerTask extends Task<Image> {
 
     public static final Image NO_CONNECTION_IMG = new Image(MJPEGStreamViewerTask.class.getResourceAsStream("/noconnection.gif"));
-    public static final String NO_CONNECTION_STR = "Not Connected";
+    public static final String NO_CONNECTION_STR = "N/A,N/A";
 
     // The bytes for the start image and end image tags in a JPEG image
     // This is how we separate each image
@@ -216,7 +216,7 @@ public class MJPEGStreamViewerTask extends Task<Image> {
                     // Calculate FPS and Mbps
                     fpsCounter ++;
                     if(System.currentTimeMillis() - lastStatCheck >= 1000) {
-                        updateMessage("FPS: " + fpsCounter + "       Bandwidth: " 
+                        updateMessage(String.valueOf(fpsCounter) + "," 
                                 + String.format("%.3f", mbpsCounter * BPS_TO_MBPS) + "Mbps");
                         fpsCounter = 0;
                         mbpsCounter = 0;
